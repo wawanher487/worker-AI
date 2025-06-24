@@ -14,10 +14,11 @@ def run_pipeline(data):
     #cek status absensi
     #Konversi waktu string ke datetime
     waktu_absen = datetime.strptime(data["datetime"], "%d-%m-%Y %H:%M:%S")
-    jam_normal = datetime.combine(waktu_absen.date(), time(8, 0, 0))# format waktu datang normal
+    jam_normal = datetime.combine(waktu_absen.date(), time(8, 0, 0)) # Jam masuk normal
+    jam_pulang = datetime.combine(waktu_absen.date(), time(17, 0, 0)) # Jam pulang normal
 
-    if waktu_absen.time() < time(17, 0, 0):
-        # Masuk
+    if waktu_absen <= jam_pulang:
+        # Kehadiran (bisa tepat waktu atau terlambat)
         if waktu_absen > jam_normal:
             status_absen = "terlambat"
             selisih = waktu_absen - jam_normal

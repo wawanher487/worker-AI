@@ -23,8 +23,8 @@ def run_pipeline(payload):
         "process": "done",
         "jam_masuk": "08:00:00",
         "jam_keluar": "17:00:00",
-        "jam_masuk_actual": payload["datetime"].split(" ")[1],  # ambil jam saja
-        "jam_keluar_actual": payload["datetime"].split(" ")[1],
+        "jam_masuk_actual": "",  # Diisi nanti saat masuk
+        "jam_keluar_actual": "",  # Diisi nanti saat pulang
         "jumlah_telat": 0,
         "total_jam_telat": 0,
         **klasifikasi
