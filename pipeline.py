@@ -1,4 +1,5 @@
-from classifier import classify_face
+from classifier import run_classification
+from datetime import datetime, time, timedelta
 from sender import send_to_api
 
 def run_pipeline(data):
@@ -8,7 +9,32 @@ def run_pipeline(data):
     image_url = f"https://monja-file.pptik.id/v1/view?path=presensi/{filename}"
 
     # 2. Jalankan klasifikasi wajah dari URL
-    hasil = classify_face(image_url)
+    hasil = run_classification(image_url)
+
+    #cek status absensi
+    #Konversi waktu string ke datetime
+    waktu_absen = datetime.strptime(data["datetime"], "%d-%m-%Y %H:%M:%S")
+    jam_normal = datetime.combine(waktu_absen.date(), time(8, 0, 0))# format waktu datang normal
+
+    if waktu_absen.time() < time(17, 0, 0):
+        # Masuk
+        if waktu_absen > jam_normal:
+            status_absen = "terlambat"
+            selisih = waktu_absen - jam_normal
+            total_jam_telat = round(selisih.total_seconds() / 3600, 2)  # Jam desimal
+        else:
+            status_absen = "hadir"
+            total_jam_telat = 0
+
+        jam_masuk_actual = waktu_absen.strftime("%H:%M:%S")
+        jam_keluar_actual = ""
+    else:
+        # Pulang
+        status_absen = "pulang"
+        jam_masuk_actual = ""
+        jam_keluar_actual = waktu_absen.strftime("%H:%M:%S")
+        total_jam_telat = 0
+
 
     # 3. Gabungkan hasil klasifikasi dengan metadata dari worker 1
     payload = {
@@ -21,10 +47,11 @@ def run_pipeline(data):
         "process": "done",
         "jam_masuk": "08:00:00",
         "jam_keluar": "17:00:00",
-        "jam_masuk_actual": data["datetime"].split(" ")[1],
-        "jam_keluar_actual": data["datetime"].split(" ")[1],
+        "jam_masuk_actual": jam_masuk_actual,
+        "jam_keluar_actual":  jam_keluar_actual,
+        "status_absen": status_absen,
         "jumlah_telat": 0,
-        "total_jam_telat": 0,
+        "total_jam_telat": total_jam_telat,
     }
 
     # 4. Kirim ke API Laravel

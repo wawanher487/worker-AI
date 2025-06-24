@@ -1,0 +1,5 @@
+pip uninstall face_recognition face_recognition_models dlib -y
+pip install cmake
+pip install dlib
+pip install git+https://github.com/ageitgey/face_recognition_models
+pip install face_recognition
