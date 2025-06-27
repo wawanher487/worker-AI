@@ -12,7 +12,7 @@ def run_pipeline(payload):
     image_path = f"https://monja-file.pptik.id/v1/view?path=presensi/{filename}"
 
      # Kirim ke classifier
-    klasifikasi = classify_face(image_url)
+    klasifikasi = classify_face(image_path)
 
     result = {
         "guid": payload["guid"],
@@ -23,8 +23,8 @@ def run_pipeline(payload):
         "process": "done",
         "jam_masuk": "08:00:00",
         "jam_keluar": "17:00:00",
-        "jam_masuk_actual": "",  # Diisi nanti saat masuk
-        "jam_keluar_actual": "",  # Diisi nanti saat pulang
+        "jam_masuk_actual": "-",  # Diisi nanti saat masuk
+        "jam_keluar_actual": "-",  # Diisi nanti saat pulang
         "jumlah_telat": 0,
         "total_jam_telat": 0,
         **klasifikasi

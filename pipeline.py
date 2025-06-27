@@ -13,7 +13,12 @@ def run_pipeline(data):
 
     #cek status absensi
     #Konversi waktu string ke datetime
-    waktu_absen = datetime.strptime(data["datetime"], "%d-%m-%Y %H:%M:%S")
+    try:
+        waktu_absen = datetime.strptime(data["datetime"], "%d-%m-%Y %H:%M:%S")
+    except ValueError as e:
+        print(f"[ERROR] Format datetime salah: {data.get('datetime')}")
+        return
+
     jam_normal = datetime.combine(waktu_absen.date(), time(8, 0, 0)) # Jam masuk normal
     jam_pulang = datetime.combine(waktu_absen.date(), time(17, 0, 0)) # Jam pulang normal
 
@@ -28,11 +33,11 @@ def run_pipeline(data):
             total_jam_telat = 0
 
         jam_masuk_actual = waktu_absen.strftime("%H:%M:%S")
-        jam_keluar_actual = ""
+        jam_keluar_actual = "-"
     else:
         # Pulang
         status_absen = "pulang"
-        jam_masuk_actual = ""
+        jam_masuk_actual = "-"
         jam_keluar_actual = waktu_absen.strftime("%H:%M:%S")
         total_jam_telat = 0
 
